@@ -1,7 +1,5 @@
 #!/bin/bash
 
-envsubst < /root/msmtprc > /root/.msmtprc
-
 # Set our PHP ini environment variable defauts.
 if [[ ! -n "${PHP_DISPLAY_ERRORS}" ]]; then
   export PHP_DISPLAY_ERRORS=Off

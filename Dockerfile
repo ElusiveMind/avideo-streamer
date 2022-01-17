@@ -1,26 +1,16 @@
 FROM ubuntu:20.04
 
 # Set our our meta data for this container.
-LABEL name="Powertools.sh Platform Docker Container"
+LABEL name="Powertools.sh AVideo Streamer Container"
 LABEL author="Michael R. Bagnall <michael@bagnall.io>"
 
 WORKDIR /root
 
 ENV TERM xterm
 
-ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/var/www/html/vendor/drush/drush:vendor/drush/drush:/var/www/html/drush/drush
-
-# Update to NodeJS 16 and install nvm for supporting other versions.
 RUN apt-get update && apt-get -y upgrade
 RUN apt-get -y install curl dirmngr apt-transport-https lsb-release ca-certificates sudo apt-utils wget
-RUN curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash && \
-  export NVM_DIR="$HOME/.nvm" && \
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && \
-  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" 
 
-# Update apt repos and install base apt packages.
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
   apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   build-essential \
@@ -28,20 +18,12 @@ RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add
   ffmpeg \
   docker \
   libgd-dev \
-  msmtp \
   bzip2 \
-  nodejs \
-  sudo \
   vim \
-  wget \
   mariadb-client \
-  curl \
-  msmtp \
   net-tools \
   gettext \
   unzip \
-  logrotate \
-  webalizer \
   imagemagick \
   apache2 \
   apache2-utils \
@@ -92,10 +74,6 @@ COPY etc/apache2/apache2.conf /etc/apache2/apache2.conf
 COPY etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 COPY etc/php/7.4/apache2/php.ini /etc/php/7.4/apache2/php.ini
-COPY conf/mail.ini /etc/php/7.4/apache2/conf.d/mail.ini
-COPY conf/mail.ini /etc/php/7.4/cli/conf.d/mail.ini
-
-COPY conf/webalizer.conf /etc/webalizer/webalizer.conf
 
 # Add our localhost certificate
 ADD etc/ssl/localhost.crt /etc/ssl/certs/localhost.crt
@@ -119,18 +97,8 @@ RUN a2enmod rewrite \
   && a2enmod remoteip \
   && a2enmod ssl
 
-RUN curl -sS https://getcomposer.org/installer | php -- \
-  --install-dir=/usr/local/bin \
-  --filename=composer
-
 # Add our startup message on the container.
 ADD conf/startup.sh /root/.bashrc
-
-# Our smtp mail configuration to use php mail() as our SMTP server.
-ADD conf/msmtprc /root/msmtprc
-
-# Add our logrotate configuration
-ADD etc/logrotate.conf /etc/logrotate.conf
 
 # Our startup script used to install Drupal (if configured) and start Apache.
 ADD conf/run-httpd.sh /run-httpd.sh
@@ -140,6 +108,6 @@ RUN chmod -v +x /run-httpd.sh
 ENV VERSION 11.1.1
 ENV BUILD_DATE January 16, 2022
 
-WORKDIR /var
+WORKDIR /var/www/html/web
 
 CMD [ "/run-httpd.sh" ]
