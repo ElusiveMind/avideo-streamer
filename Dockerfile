@@ -67,7 +67,7 @@ RUN apt-get install -y \
 RUN rm -rf /var/www/html && \
   mkdir -p /var/www/html && \
   cd /var/www/html && \
-  git clone -b 11.1.1 https://github.com/WWBN/AVideo.git web && \
+  git clone -b 11.6 https://github.com/WWBN/AVideo.git web && \
   chmod -R 777 /var/www/html/web
 
 COPY etc/apache2/apache2.conf /etc/apache2/apache2.conf
@@ -105,7 +105,7 @@ ADD conf/run-httpd.sh /run-httpd.sh
 RUN chmod -v +x /run-httpd.sh
 
 # Our info for the info message!
-ENV VERSION 11.1.1
+ENV VERSION 11.6
 ENV BUILD_DATE January 16, 2022
 
 WORKDIR /var/www/html/web

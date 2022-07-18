@@ -14,6 +14,6 @@ fi
 echo "";
 echo "Powertools.sh - AVideo Streamer";
 echo "Version $VERSION - $BUILD_DATE";
-echo "michael@bagnall.io / https://coderefactor.com";
+echo "michael@bagnall.io / https://bagnall.io";
 echo "---------------------------------------------";
 echo ""
